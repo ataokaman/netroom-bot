@@ -1,31 +1,47 @@
 (function(){
   console.log("もてょBOT起動");
 
-  function getInput(){
-    // 入力欄候補を全部拾う
-    let inputs = document.querySelectorAll('[contenteditable="true"], textarea, input');
-    return inputs.length ? inputs[inputs.length - 1] : null;
+  function getInputFromDoc(doc){
+    return doc.querySelector('[contenteditable="true"], textarea, input');
+  }
+
+  function findInput(){
+    // ① 自分のページ
+    let input = getInputFromDoc(document);
+    if(input) return input;
+
+    // ② iframeの中を全部探す
+    let iframes = document.querySelectorAll("iframe");
+
+    for(let iframe of iframes){
+      try{
+        let doc = iframe.contentDocument || iframe.contentWindow.document;
+        let input = getInputFromDoc(doc);
+        if(input) return input;
+      }catch(e){
+        // クロスオリジンは無視
+      }
+    }
+
+    return null;
   }
 
   function send(text){
-    const input = getInput();
+    const input = findInput();
 
     if(!input){
-      console.log("入力欄が見つからない");
+      console.log("入力欄見つからない");
       return;
     }
 
-    // contenteditable対応
     if(input.isContentEditable){
       input.innerText = text;
     } else {
       input.value = text;
     }
 
-    // 入力イベント
     input.dispatchEvent(new Event('input', { bubbles: true }));
 
-    // Enterキー送信
     input.dispatchEvent(new KeyboardEvent('keydown', {
       bubbles: true,
       cancelable: true,
@@ -34,9 +50,8 @@
     }));
   }
 
-  // 起動テスト
   setTimeout(()=>{
     send("もてょBOT起動");
-  },1000);
+  },1500);
 
 })();
