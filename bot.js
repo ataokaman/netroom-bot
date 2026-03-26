@@ -1,36 +1,33 @@
 (function(){
-  console.log("ボット起動");
+  console.log("もてょBOT起動");
 
-  // チャット入力欄（適宜調整）
-  const input = document.querySelector("input, textarea");
-
-  if(!input){
-    alert("入力欄が見つからない");
-    return;
+  function send(text){
+    sendMessage(text, 0, 0, 0);
   }
 
-  // 簡単なAIっぽい応答
   function getResponse(text){
     if(text.includes("こんにちは")) return "こんにちは！";
-    if(text.includes("名前")) return "もてょです";
-    if(text.includes("暇")) return "じゃあ話そうぜ";
-    return "それ面白いね";
+    if(text.includes("暇")) return "話そうぜ";
+    if(text.includes("名前")) return "もてょBOTだよ";
+    return "それな";
   }
 
-  // Enterで送信されたとき反応
-  input.addEventListener("keydown", function(e){
-    if(e.key === "Enter"){
-      setTimeout(()=>{
-        let msg = input.value;
-        let res = getResponse(msg);
+  let lastMessage = "";
 
-        // 返信を入力欄にセット
-        input.value = res;
+  setInterval(()=>{
+    try{
+      // 最新メッセージ取得（雑だけど動く）
+      let text = document.body.innerText;
 
-        // 送信イベント（サイトによって調整必要）
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      }, 300);
+      if(text !== lastMessage){
+        lastMessage = text;
+
+        let res = getResponse(text);
+        send(res);
+      }
+    }catch(e){
+      console.log("エラー", e);
     }
-  });
+  },2000);
 
 })();
