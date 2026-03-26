@@ -1,5 +1,5 @@
 (function(){
-  console.log("もてょBOT起動");
+  console.log("BOT起動");
 
   function getInput(){
     return document.querySelector('[contenteditable="true"], textarea, input');
@@ -13,8 +13,7 @@
       return;
     }
 
-    input.focus(); // 🔥 重要
-
+    // 入力
     if(input.isContentEditable){
       input.innerText = text;
     } else {
@@ -23,19 +22,18 @@
 
     input.dispatchEvent(new Event('input', { bubbles: true }));
 
-    ["keydown","keypress","keyup"].forEach(type=>{
-      input.dispatchEvent(new KeyboardEvent(type, {
-        bubbles: true,
-        cancelable: true,
-        key: 'Enter',
-        code: 'Enter',
-        ctrlKey: true
-      }));
-    });
+    // 🔥 Ctrl + Enterで送信
+    input.dispatchEvent(new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      key: 'Enter',
+      code: 'Enter',
+      ctrlKey: true
+    }));
   }
 
   setTimeout(()=>{
-    send("もてょBOT起動");
+    send("BOT起動");
   },1000);
 
 })();
