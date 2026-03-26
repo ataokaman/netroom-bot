@@ -22,14 +22,16 @@
 
     input.dispatchEvent(new Event('input', { bubbles: true }));
 
-    // 🔥 Ctrl + Enterで送信
-    input.dispatchEvent(new KeyboardEvent('keydown', {
-      bubbles: true,
-      cancelable: true,
-      key: 'Enter',
-      code: 'Enter',
-      ctrlKey: true
-    }));
+    // 🔥 Ctrl+Enter（フルセット）
+    ["keydown","keypress","keyup"].forEach(type=>{
+      input.dispatchEvent(new KeyboardEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        key: 'Enter',
+        code: 'Enter',
+        ctrlKey: true
+      }));
+    });
   }
 
   setTimeout(()=>{
