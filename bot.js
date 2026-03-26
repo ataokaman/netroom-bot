@@ -1,63 +1,41 @@
 (function(){
   console.log("もてょBOT起動");
 
-  function sendMessageReal(text){
-    try{
-      // 🔥 最有力：send関数
-      if(typeof send === "function"){
-        send(text);
-        return true;
-      }
+  function getInput(){
+    return document.querySelector('[contenteditable="true"], textarea, input');
+  }
 
-      // 🔥 次候補
-      if(typeof send_pvm === "function"){
-        send_pvm(text);
-        return true;
-      }
+  function send(text){
+    const input = getInput();
 
-      // 🔥 fallback（最終手段）
-      let input = document.querySelector('[contenteditable="true"], textarea, input');
-
-      if(input){
-        input.focus();
-
-        if(input.isContentEditable){
-          input.innerText = text;
-        } else {
-          input.value = text;
-        }
-
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-
-        // Ctrl+Enter
-        ["keydown","keyup"].forEach(type=>{
-          input.dispatchEvent(new KeyboardEvent(type,{
-            bubbles:true,
-            key:"Enter",
-            code:"Enter",
-            ctrlKey:true
-          }));
-        });
-
-        return true;
-      }
-
-    }catch(e){
-      console.log("送信エラー", e);
+    if(!input){
+      console.log("入力欄なし");
+      return;
     }
 
-    return false;
+    input.focus(); // 🔥 重要
+
+    if(input.isContentEditable){
+      input.innerText = text;
+    } else {
+      input.value = text;
+    }
+
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    ["keydown","keypress","keyup"].forEach(type=>{
+      input.dispatchEvent(new KeyboardEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        key: 'Enter',
+        code: 'Enter',
+        ctrlKey: true
+      }));
+    });
   }
 
   setTimeout(()=>{
-    let ok = sendMessageReal("もてょBOT起動");
-
-    if(!ok){
-      console.log("送信失敗");
-    }else{
-      console.log("送信成功");
-    }
-
+    send("もてょBOT起動");
   },1000);
 
 })();
