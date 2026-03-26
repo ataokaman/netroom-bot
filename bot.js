@@ -2,7 +2,7 @@
   console.log("もてょBOT起動");
 
   function send(text){
-    sendMessage(text, 0, 0, 0);
+    sendMessage(_0x5f3706,_0x43f755,_0x6db44b,_0x1ff8a6);
   }
 
   function getResponse(text){
