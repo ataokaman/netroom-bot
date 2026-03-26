@@ -1,21 +1,21 @@
 (function(){
   console.log("もてょBOT起動");
 
-  function send(text){
+  function sendMessageReal(text){
     try{
-      // 🔥 最有力（本命）
-      if(typeof sendMessage === "function"){
-        sendMessage(text);
-        return;
+      // 🔥 最有力：send関数
+      if(typeof send === "function"){
+        send(text);
+        return true;
       }
 
       // 🔥 次候補
-      if(typeof d_send === "function"){
-        d_send(text);
-        return;
+      if(typeof send_pvm === "function"){
+        send_pvm(text);
+        return true;
       }
 
-      // 🔥 最終 fallback（DOM）
+      // 🔥 fallback（最終手段）
       let input = document.querySelector('[contenteditable="true"], textarea, input');
 
       if(input){
@@ -28,15 +28,36 @@
         }
 
         input.dispatchEvent(new Event('input', { bubbles: true }));
+
+        // Ctrl+Enter
+        ["keydown","keyup"].forEach(type=>{
+          input.dispatchEvent(new KeyboardEvent(type,{
+            bubbles:true,
+            key:"Enter",
+            code:"Enter",
+            ctrlKey:true
+          }));
+        });
+
+        return true;
       }
 
     }catch(e){
-      console.log("エラー", e);
+      console.log("送信エラー", e);
     }
+
+    return false;
   }
 
   setTimeout(()=>{
-    send("もてょBOT起動");
+    let ok = sendMessageReal("もてょBOT起動");
+
+    if(!ok){
+      console.log("送信失敗");
+    }else{
+      console.log("送信成功");
+    }
+
   },1000);
 
 })();
