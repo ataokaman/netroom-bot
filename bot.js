@@ -1,47 +1,37 @@
 (function(){
   console.log("もてょBOT起動");
 
-  function getInput(){
-    return document.querySelector('[contenteditable="true"], textarea, input');
-  }
-
-  function getSendButton(){
-    // 「送信」ボタン探す
-    let buttons = document.querySelectorAll("button");
-
-    for(let btn of buttons){
-      if(btn.innerText.includes("送信")){
-        return btn;
-      }
-    }
-
-    return null;
-  }
-
   function send(text){
-    const input = getInput();
-    const btn = getSendButton();
+    try{
+      // 🔥 最有力（本命）
+      if(typeof sendMessage === "function"){
+        sendMessage(text);
+        return;
+      }
 
-    if(!input){
-      console.log("入力欄なし");
-      return;
-    }
+      // 🔥 次候補
+      if(typeof d_send === "function"){
+        d_send(text);
+        return;
+      }
 
-    input.focus();
+      // 🔥 最終 fallback（DOM）
+      let input = document.querySelector('[contenteditable="true"], textarea, input');
 
-    if(input.isContentEditable){
-      input.innerText = text;
-    } else {
-      input.value = text;
-    }
+      if(input){
+        input.focus();
 
-    input.dispatchEvent(new Event('input', { bubbles: true }));
+        if(input.isContentEditable){
+          input.innerText = text;
+        } else {
+          input.value = text;
+        }
 
-    // 🔥 ボタンクリックで送信
-    if(btn){
-      btn.click();
-    }else{
-      console.log("送信ボタン見つからない");
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+
+    }catch(e){
+      console.log("エラー", e);
     }
   }
 
